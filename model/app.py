@@ -4,7 +4,8 @@ from flask_cors import CORS
 import google.generativeai as genai
 from dotenv import load_dotenv
 import os
-from ml_script import gemini_pro_response
+from functions import gemini_pro_response, nutrient
+from PIL import Image
 
 app = Flask(__name__)
 CORS(app)
@@ -13,9 +14,14 @@ load_dotenv()
 api_key = os.getenv("api_key")
 genai.configure(api_key=api_key)
 
+app.config['UPLOAD_FOLDER'] = 'uploads/'
+
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
+
 @app.route('/recipies', methods=['GET','POST'])
 def recipe():
-    ingredients = request.form.get('ingredients', None)
+    ingredients = request.get('ingredients')
 
     if not ingredients:
         return jsonify({"error": "No data provided"}), 400
@@ -33,6 +39,33 @@ def recipe():
     recipes = gemini_pro_response(prompt)
 
     return recipes
+
+@app.route('/allergy', methods=['GET','POST'])
+def allergy():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+    
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(filepath)
+    img = Image.open(filepath)
+    data = nutrient(img)
+
+    prompt_header = '''
+    You are Praj, an AI assistant focused on identifying allergens in food items. 
+    Your task is to analyze JSON input resembling the output from the NutritionX API, which includes nutritional information about a specific food item. 
+    From this data, extract and summarize the common allergens present, such as nuts, dairy, gluten, or shellfish. Additionally, list the typical allergic reactions associated with these allergens, including symptoms like hives, swelling, or digestive issues. 
+    Finally, classify the potential allergic reactions by severity—mild, moderate, or severe—highlighting the implications for individuals with allergies. Your response should be clear and concise, providing essential information to help consumers understand the potential risks linked to the food item.
+    '''
+
+    prompt = prompt_header+data
+    guidance_message = data + gemini_pro_response(prompt)
+
+    return guidance_message
 
 if __name__ == '__main__':
     app.run(debug=True)
