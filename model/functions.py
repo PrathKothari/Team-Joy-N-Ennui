@@ -22,7 +22,7 @@ def nutrient(img):
 
     # Constants for the Nutrition API
     APP_ID = os.getenv("app_id")
-    APP_KEY = os.getenv("api_key")
+    APP_KEY = os.getenv("nutri_api_key")
 
     with open("class_names.txt", "r") as f:
         class_names = [food101_class_names.strip() for food101_class_names in f.readlines()]
