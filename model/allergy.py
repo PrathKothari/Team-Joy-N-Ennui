@@ -1,6 +1,10 @@
 from Consolidated_model import data
 import google.generativeai as genai
-api_key= "AIzaSyA5sshngNj9Yiz2U8kHrH3q8oGY1rrXq1c"
+from dotenv import load_dotenv
+load_dotenv()
+import os
+
+api_key=os.getenv("gen_ai_key")
 
 def removeSymbols(response):
     return response.strip().replace("*", '')

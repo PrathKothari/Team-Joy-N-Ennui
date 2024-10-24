@@ -6,13 +6,15 @@ import requests
 import json
 from PIL import Image
 import warnings
+from dotenv import load_dotenv
+load_dotenv()
 
 # Ignore warnings
 warnings.filterwarnings("ignore")
 
 # Constants for the Nutrition API
-APP_ID = '52a90718'
-APP_KEY = '4fde55b9d5db76a45a5a2eb22ff2bd88'
+APP_ID = os.getenv("app_id")
+APP_KEY = os.getenv("api_key")
 
 # Load the image
 image_path = ''  # Replace with your image file path
