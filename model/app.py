@@ -15,7 +15,8 @@ genai.configure(api_key=api_key)
 
 @app.route('/recipies', methods=['GET','POST'])
 def recipe():
-    ingredients = request.form.get('ingredients', None)
+    data = request.get_json()  # This will get the JSON body from the request
+    ingredients = data.get('ingredients', None)
 
     if not ingredients:
         return jsonify({"error": "No data provided"}), 400
@@ -32,7 +33,7 @@ def recipe():
     prompt = f"\n\nI have following Ingredients: {ingredients}" + prompt_header
     recipes = gemini_pro_response(prompt)
 
-    return recipes
+    return jsonify(recipes) 
 
 if __name__ == '__main__':
     app.run(debug=True)
