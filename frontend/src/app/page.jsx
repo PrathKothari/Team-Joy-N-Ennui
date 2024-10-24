@@ -14,13 +14,13 @@ function page() {
 
       <div className="mt-[200px] -ml-[40px] flex gap-[20px] mb-24 ">
         <Link href="/form">
-          <DirectionAwareHover imageUrl="/one.jpeg" children={"feature-1"} />
+          <DirectionAwareHover imageUrl="/one.jpeg" children={"Recipie Maker"} />
         </Link>
         <Link href="/model">
-          <DirectionAwareHover imageUrl="/two.jpeg" children={"feature-2"} />
+          <DirectionAwareHover imageUrl="/two.jpeg" children={"Nutrient Info"} />
         </Link>
         <Link href="/model">
-          <DirectionAwareHover imageUrl="/three.jpeg" children={"feature-3"} />
+          <DirectionAwareHover imageUrl="/three.jpeg" children={"Farmer Integration"} />
         </Link>
       </div>
     </div>
